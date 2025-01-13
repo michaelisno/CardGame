@@ -12,13 +12,14 @@ private:
 	Player player;
 	Player dealer;
 
-	void InitialiseDeck();
+	void InitialiseDeck(bool isBlackJack);
 	void ShuffleDeck();
 	Card DealCard();
 
-public:
-	Game();
+	void War();
+	void BlackJack();
 
+public:
 	void Play();
 
 };
