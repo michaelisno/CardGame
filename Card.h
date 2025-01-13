@@ -13,5 +13,6 @@ public:
 
 	std::string GetSuit() const { return m_suit; }
 	std::string GetRank() const { return m_rank; }
+	std::string GetName() const { return m_rank + " of " + m_suit; }
 	int GetValue() const { return m_value; }
 };

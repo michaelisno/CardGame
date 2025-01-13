@@ -8,9 +8,11 @@ void Player::ReceiveCard(const Card& card)
 	hand.push_back(card);
 }
 
-void Player::RemoveTopCard()
+Card Player::RemoveTopCard()
 {
+	Card card = hand[0];
 	hand.erase(hand.begin());
+	return card;
 }
 
 void Player::ShowHand()

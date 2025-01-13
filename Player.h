@@ -8,7 +8,7 @@ public:
 	std::vector<Card> hand;
 
 	void ReceiveCard(const Card& card);
-	void RemoveTopCard();
+	Card RemoveTopCard();
 	void ShowHand();
 	int CalculateHandValue();
 

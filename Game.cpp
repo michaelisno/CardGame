@@ -16,29 +16,24 @@ void Game::InitialiseDeck(bool isBlackJack)
 {
 	string suits[] = { "Hearts", "Diamonds", "Clubs", "Spades" };
 	string ranks[] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace" };
+	int values[13];
 
 	if (isBlackJack) 
 	{
-		int values[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11 };
+		int temp[]  = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11};
 
-		for (string& suit : suits)
-		{
-			for (int i = 0; i < 13; i++)
-			{
-				deck.push_back(Card(suit, ranks[i], values[i]));
-			}
-		}
 	}
 	else
 	{
-		int values[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1 };
+		int temp[] = { 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1 };
+		copy(begin(temp), end(temp), values);
+	}
 
-		for (string& suit : suits)
+	for (string& suit : suits)
+	{
+		for (int i = 0; i < 13; i++)
 		{
-			for (int i = 0; i < 13; i++)
-			{
-				deck.push_back(Card(suit, ranks[i], values[i]));
-			}
+			deck.push_back(Card(suit, ranks[i], values[i]));
 		}
 	}
 }
@@ -58,8 +53,7 @@ Card Game::DealCard()
 
 void Game::Play()
 {
-	cout << "Do you want to play War (w) or Black Jack (b)?" << endl;
-	cout << ">>";
+	cout << "Do you want to play War (w) or Black Jack (b)?" << endl << ">>";
 
 	char option;
 	cin >> option;
@@ -87,32 +81,22 @@ void Game::War()
 	ShuffleDeck();
 
 	for (int i = 0; i < 26; i++)
-	{
 		player.ReceiveCard(DealCard());
-	}
 
 	for (int i = 0; i < 26; i++)
-	{
 		dealer.ReceiveCard(DealCard());
-	}
 
-	bool isGameEnded = false;
-
-	while (!isGameEnded)
+	while (true)
 	{
 		if (player.hand.empty())
 		{
-			// Dealer Wins
 			cout << "Player has no Cards left, Dealer Wins!" << endl;
-			isGameEnded = true;
 			return;
 		}
 
 		if (dealer.hand.empty())
 		{
-			// Player Wins
 			cout << "Dealer has no Cards left, Player Wins!" << endl;
-			isGameEnded = true;
 			return;
 		}
 
@@ -123,27 +107,21 @@ void Game::War()
 
 		cout << "---------------------" << endl;
 
-		cout << "Player has: " << player.hand.size() << " cards." << endl;
-		cout << "Dealer has: " << dealer.hand.size() << " cards." << endl << endl;
+		cout << "Player has: " << player.hand.size() << " cards." << endl << "Dealer has: " << dealer.hand.size() << " cards." << endl << endl;
 
-		Card playerTopCard = player.hand[0];
-		Card dealerTopCard = dealer.hand[0];
+		Card playerTopCard = player.RemoveTopCard();
+		Card dealerTopCard = dealer.RemoveTopCard();
 
-		player.RemoveTopCard();
-		dealer.RemoveTopCard();
-
-		cout << "Player's drawn card: " << playerTopCard.GetRank() << " of " << playerTopCard.GetSuit() << "." << endl;
-		cout << "Dealer's drawn card: " << dealerTopCard.GetRank() << " of " << dealerTopCard.GetSuit() << "." << endl << endl;
+		cout << "Player's drawn card: " << playerTopCard.GetName() << endl;
+		cout << "Dealer's drawn card: " << dealerTopCard.GetName() << endl;
 
 		if (playerTopCard.GetValue() == dealerTopCard.GetValue())
 		{
-			cout << "Players Cards are the same value, a war has begun!" << endl;
+			cout << "Players Cards are the same value, a war has begun!" << endl << "Enter any character to draw your four cards." << endl;
 
-			cout << "Enter any character to draw your four cards." << endl;
 			char a;
 			cin >> a;
 
-			// war
 			bool isWarOver = false;
 
 			vector<Card> cardsInPlay;
@@ -153,25 +131,18 @@ void Game::War()
 
 			while (!isWarOver)
 			{
-				// Checks if player has enough cards for war
-				if (!(player.hand.size() >= 4))
+				if (player.hand.size() <= 3)
 				{
-					isWarOver = true;
-					isGameEnded = true;
 					cout << "Player doesn't have enough cards for War, dealer Wins!" << endl;
 					return;
 				}
 
-				// Checks if dealer has enough cards for war
-				if (!(dealer.hand.size() >= 4))
+				if (dealer.hand.size() <= 3)
 				{
-					isWarOver = true;
-					isGameEnded = true;
 					cout << "Dealer doesn't have enough cards for War, player Wins!" << endl;
 					return;
 				}
 
-				// Adds three face down cards from each player into play
 				for (int i = 0; i < 3; i++)
 				{
 					cardsInPlay.push_back(player.hand[0]);
@@ -181,14 +152,11 @@ void Game::War()
 					dealer.RemoveTopCard();
 				}
 
-				Card playerFourthCard = player.hand[0];
-				Card dealerFourthCard = dealer.hand[0];
+				Card playerFourthCard = player.RemoveTopCard();
+				Card dealerFourthCard = dealer.RemoveTopCard();
 
-				player.RemoveTopCard();
-				dealer.RemoveTopCard();
-
-				cout << "Player's Fourth Face Up Card: " << playerFourthCard.GetRank() << " of " << playerFourthCard.GetSuit() << endl;
-				cout << "Dealers's Fourth Face Up Card: " << dealerFourthCard.GetRank() << " of " << dealerFourthCard.GetSuit() << endl;
+				cout << "Player's Fourth Face Up Card: " << playerFourthCard.GetName() << endl;
+				cout << "Dealers's Fourth Face Up Card: " << dealerFourthCard.GetName() << endl;
 
 				if (playerFourthCard.GetValue() == dealerFourthCard.GetValue())
 				{
@@ -205,7 +173,6 @@ void Game::War()
 				}
 				else if (playerFourthCard.GetValue() > dealerFourthCard.GetValue())
 				{
-					// player wins round
 					cout << "Player's Card has a higher value. Player Wins Round and all cards in play!" << endl;
 					player.ReceiveCard(playerFourthCard);
 					player.ReceiveCard(dealerFourthCard);
@@ -219,7 +186,6 @@ void Game::War()
 				}
 				else
 				{
-					// dealer wins round
 					cout << "Dealers's Card has a higher value. Dealer Wins Round and all cards in play!" << endl;
 					dealer.ReceiveCard(playerFourthCard);
 					dealer.ReceiveCard(dealerFourthCard);
