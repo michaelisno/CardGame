@@ -21,7 +21,7 @@ void Game::InitialiseDeck(bool isBlackJack)
 	if (isBlackJack) 
 	{
 		int temp[]  = {2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10, 11};
-
+		copy(begin(temp), end(temp), values);
 	}
 	else
 	{
@@ -169,7 +169,7 @@ void Game::War()
 					char a;
 					cin >> a;
 
-					break;
+					continue;
 				}
 				else if (playerFourthCard.GetValue() > dealerFourthCard.GetValue())
 				{
